@@ -1,5 +1,5 @@
-#ifndef FLOW_GRAPH_ARITHMETICEXPRESSION_HPP
-#define FLOW_GRAPH_ARITHMETICEXPRESSION_HPP
+#ifndef FLOW_EXPRESSIONS_ARITHMETICEXPRESSION_HPP
+#define FLOW_EXPRESSIONS_ARITHMETICEXPRESSION_HPP
 
 #include "expressions/expression.hpp"
 #include "expressions/binary_expression.hpp"
@@ -7,10 +7,17 @@
 
 namespace flow {
 
-class ArithmeticExpression : public BinaryExpression {
+class ArithmeticExpression {
 public:
+  ArithmeticExpression() = delete;
+
+  ArithmeticExpression(const ArithmeticExpression &other) = delete;
+  ArithmeticExpression& operator=(const ArithmeticExpression &other) = delete;
+
+protected:
   ArithmeticExpression(Operator op);
-private:
+
+  Operator m_operator;
 };
 
 }

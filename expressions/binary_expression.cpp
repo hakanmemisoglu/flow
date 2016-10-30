@@ -4,9 +4,11 @@
 
 namespace flow {
 
-BinaryExpression::BinaryExpression(ExpressionPtr left_child,
+BinaryExpression::BinaryExpression(Operator op,
+                                   ExpressionPtr left_child,
                                    ExpressionPtr right_child)
-  : m_left_child(left_child),
+  : Expression(op),
+    m_left_child(left_child),
     m_right_child(right_child) {
 }
 

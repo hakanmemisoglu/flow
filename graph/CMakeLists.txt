@@ -21,3 +21,5 @@ add_library(flow_graph_sourcenode
 add_library(flow_graph_filternode
   filter_node.cpp
   filter_node.hpp)
+target_link_libraries(flow_graph_filternode
+  flow_expressions_expression)
