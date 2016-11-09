@@ -6,6 +6,7 @@
 #include "expressions/constant_expression.hpp"
 #include "expressions/expression.hpp"
 #include "expressions/addition_expression.hpp"
+#include "expressions/subtraction_expression.hpp"
 #include "expressions/parameter_expression.hpp"
 #include "expressions/filter_expression.hpp"
 #include "expressions/lessthan_expression.hpp"
@@ -19,14 +20,16 @@ int main() {
   flow::ExpressionPtr e3 = std::make_shared<flow::AdditionExpression>(const_e1, const_e2);
   flow::VariableExpressionPtr e4 =
       std::make_shared<flow::VariableExpression>("param1");
-  flow::ExpressionPtr e5 = std::make_shared<flow::LessThanExpression>(e4, e3);
+  flow::ExpressionPtr const_e5 = std::make_shared<flow::ConstantExpression>(54);
+  flow::ExpressionPtr e6 = std::make_shared<flow::SubtractionExpression>(e4, const_e5);
+  flow::ExpressionPtr e7 = std::make_shared<flow::LessThanExpression>(e6, e3);
 
   flow::ParameterExpressionPtr param
     = std::make_shared<flow::ParameterExpression>("param1");
 
   flow::ExpressionPtr f1 = std::make_shared<flow::FilterExpression>("filter",
                                                                     param,
-                                                                    e5);
+                                                                    e7);
 
   flow::Scope scope;
   gcc_jit_context *context = gcc_jit_context_acquire();
@@ -40,7 +43,7 @@ int main() {
 
   std::cout << filter_func(100) << std::endl;
   std::cout << filter_func(200) << std::endl;
-  std::cout << filter_func(400) << std::endl;
+  std::cout << filter_func(600) << std::endl;
 
   //  gcc_jit_context_dump_to_file(context, "source.txt", 1);
 

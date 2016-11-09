@@ -117,6 +117,7 @@ target_link_libraries(expression_test
   flow_expressions_constantexpression
   flow_expressions_expression
   flow_expressions_additionexpression
+  flow_expressions_subtractionexpression
   flow_expressions_parameterexpression
   flow_expressions_filterexpression
   flow_expressions_lessthanexpression
