@@ -1,3 +1,7 @@
+add_library(flow_graph_queryscope
+  query_scope.cpp
+  query_scope.hpp)
+
 add_library(flow_graph_node
   node.cpp
   node.hpp)
@@ -5,10 +9,14 @@ add_library(flow_graph_node
 add_library(flow_graph_nullarynode
   nullary_node.cpp
   nullary_node.hpp)
+target_link_libraries(flow_graph_nullarynode
+  flow_graph_node)
 
 add_library(flow_graph_unarynode
   unary_node.cpp
   unary_node.hpp)
+target_link_libraries(flow_graph_unarynode
+  flow_graph_node)
 
 add_library(flow_graph_binarynode
   binary_node.cpp
@@ -28,4 +36,13 @@ add_library(flow_graph_tablenode
   table_node.cpp
   table_node.hpp)
 target_link_libraries(flow_graph_tablenode
-  flow_graph_nullarynode)
+  flow_graph_nullarynode
+  flow_graph_queryscope
+  gccjit)
+
+
+add_executable(nodes_test
+  tests/nodes_test.cpp)
+target_link_libraries(nodes_test
+  flow_graph_tablenode
+  gccjit)

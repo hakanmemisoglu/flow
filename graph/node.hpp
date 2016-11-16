@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+#include <libgccjit.h>
+
+#include "graph/query_scope.hpp"
+
 namespace flow {
 
 class Node;
@@ -28,7 +32,7 @@ public:
 
   virtual std::vector<NodePtr> getChildren() const = 0;
 
-  virtual void codegen() = 0;
+  virtual void codegen(gcc_jit_context *context, QueryScope *scope) = 0;
 
 private:
   const std::string m_name;

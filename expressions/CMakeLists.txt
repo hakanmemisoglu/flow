@@ -1,5 +1,3 @@
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgccjit")
-
 add_library(flow_expressions_scope
   scope.cpp
   scope.hpp)
@@ -121,4 +119,5 @@ target_link_libraries(expression_test
   flow_expressions_parameterexpression
   flow_expressions_filterexpression
   flow_expressions_lessthanexpression
-  flow_expressions_variableexpression)
+  flow_expressions_variableexpression
+  gccjit)

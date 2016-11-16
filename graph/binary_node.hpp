@@ -4,6 +4,7 @@
 #include <string>
 
 #include "graph/node.hpp"
+#include "graph/query_scope.hpp"
 
 namespace flow {
 
