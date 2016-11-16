@@ -15,7 +15,6 @@ public:
 
   std::vector<NodePtr> getChildren() const final override;
 
-private:
 };
 
 }

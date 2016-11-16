@@ -11,7 +11,7 @@ public:
   FromNode(const std::string &name,
            NodePtr input);
 
-private:
+protected:
   NodePtr m_input;
 };
 

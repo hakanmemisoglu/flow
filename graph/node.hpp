@@ -28,6 +28,8 @@ public:
 
   virtual std::vector<NodePtr> getChildren() const = 0;
 
+  virtual void codegen() = 0;
+
 private:
   const std::string m_name;
 };

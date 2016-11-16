@@ -1,6 +1,7 @@
 #ifndef FLOW_EXPRESSIONS_FILTEREXPRESSION_HPP
 #define FLOW_EXPRESSIONS_FILTEREXPRESSION_HPP
 
+#include <memory>
 #include <string>
 
 #include <libgccjit.h>
@@ -10,6 +11,10 @@
 #include "expressions/scope.hpp"
 
 namespace flow {
+
+class FilterExpression;
+
+using FilterExpressionPtr = std::shared_ptr<FilterExpression>;
 
 class FilterExpression : public Expression {
 public:

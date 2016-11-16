@@ -23,3 +23,9 @@ add_library(flow_graph_filternode
   filter_node.hpp)
 target_link_libraries(flow_graph_filternode
   flow_expressions_expression)
+
+add_library(flow_graph_tablenode
+  table_node.cpp
+  table_node.hpp)
+target_link_libraries(flow_graph_tablenode
+  flow_graph_nullarynode)

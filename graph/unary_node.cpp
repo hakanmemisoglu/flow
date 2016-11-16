@@ -7,8 +7,10 @@
 
 namespace flow {
 
-UnaryNode::UnaryNode(const std::string &name)
-  : Node(name) {
+UnaryNode::UnaryNode(const std::string &name,
+                     NodePtr child)
+  : Node(name),
+    m_child(child) {
 }
 
 std::vector<NodePtr> UnaryNode::getChildren() const {
