@@ -44,6 +44,9 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
   // Loop body
   gcc_jit_block *table_node_loop_body = gcc_jit_function_new_block(query_function, "TableNodeLoopBody");
 
+  // Loop body-end
+  gcc_jit_block *table_node_loop_body_end = gcc_jit_function_new_block(query_function, "TableNodeLoopBodyEnd");
+
   // Loop exit
   gcc_jit_block *table_node_loop_exit = gcc_jit_function_new_block(query_function, "TableNodeLoopExit");
 
@@ -72,11 +75,13 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
 
 
   // Loop condition actions.
-  gcc_jit_rvalue *loop_guard = gcc_jit_context_new_comparison(context,
-                                                              nullptr,
-                                                              GCC_JIT_COMPARISON_GE,
-                                                              gcc_jit_lvalue_as_rvalue(tuple_id),
-                                                              gcc_jit_lvalue_as_rvalue(total_num_tuples));
+  gcc_jit_rvalue *loop_guard = gcc_jit_context_new_comparison(
+      context,
+      nullptr,
+      GCC_JIT_COMPARISON_GE,
+      gcc_jit_lvalue_as_rvalue(tuple_id),
+      gcc_jit_lvalue_as_rvalue(total_num_tuples));
+
   gcc_jit_block_end_with_conditional(table_node_loop_cond,
                                      nullptr,
                                      loop_guard,
@@ -85,36 +90,46 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
 
   // Loop body actions.
   gcc_jit_type *void_type = gcc_jit_context_get_type(context, GCC_JIT_TYPE_VOID);
-  gcc_jit_param *param_first = gcc_jit_context_new_param(context, nullptr, int64_type, "input_value");
-  gcc_jit_param *params_for_internal[1] = {param_first};
-  gcc_jit_function *my_func =  gcc_jit_context_new_function(context,
-                                                            nullptr,
-                                                            GCC_JIT_FUNCTION_IMPORTED,
-                                                            void_type,
-                                                            "my_internal_function",
-                                                            1,
-                                                            params_for_internal,
-                                                            0);
+  gcc_jit_param *param_first = gcc_jit_context_new_param(context,
+                                                         nullptr,
+                                                         int64_type,
+                                                         "input_value");
 
-  gcc_jit_rvalue *args_for_internal[1] = {gcc_jit_lvalue_as_rvalue(tuple_id)};
-  gcc_jit_block_add_eval(table_node_loop_body,
-                         nullptr,
-                         gcc_jit_context_new_call(context,
-                                                  nullptr,
-                                                  my_func,
-                                                  1,
-                                                  args_for_internal));
+  gcc_jit_block *table_node_parent_begin =
+      gcc_jit_function_new_block(query_function, "Parent1Begin");
 
-  gcc_jit_block_add_assignment_op(table_node_loop_body,
+  gcc_jit_block_end_with_jump(table_node_loop_body, nullptr,
+                              table_node_parent_begin);
+
+  gcc_jit_block *table_node_parent_end =
+      gcc_jit_function_new_block(query_function, "ParentEnd1");
+
+  gcc_jit_block_end_with_jump(table_node_parent_end, nullptr,
+                              table_node_loop_body_end);
+
+  gcc_jit_block_add_assignment_op(table_node_loop_body_end,
                                   nullptr,
                                   tuple_id,
                                   GCC_JIT_BINARY_OP_PLUS,
                                   gcc_jit_context_one(context, int64_type));
 
-  gcc_jit_block_end_with_jump(table_node_loop_body, nullptr, table_node_loop_cond);
+  // Goto loop condition.
+  gcc_jit_block_end_with_jump(table_node_loop_body_end,
+                              nullptr,
+                              table_node_loop_cond);
+
 
   // Loop end actions.
   gcc_jit_block_end_with_void_return(table_node_loop_exit, nullptr);
+
+  // Modify the scope.
+  scope->setCurrentValue(gcc_jit_lvalue_as_rvalue(tuple_id));
+  scope->setCurrentEvalBlock(table_node_parent_begin);
+  scope->setCurrentExitBlock(table_node_parent_end);
+
+  // Call parent.
+  getParent()->codegen(context, scope);
+
 }
 
 }

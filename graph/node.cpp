@@ -15,4 +15,12 @@ std::string Node::getName() const {
   return m_name;
 }
 
+void Node::setParent(Node *node) {
+  m_parent = node;
+}
+
+Node* Node::getParent() {
+  return m_parent;
+}
+
 }

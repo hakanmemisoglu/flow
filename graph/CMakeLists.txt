@@ -30,7 +30,9 @@ add_library(flow_graph_filternode
   filter_node.cpp
   filter_node.hpp)
 target_link_libraries(flow_graph_filternode
-  flow_expressions_expression)
+  flow_graph_unarynode
+  flow_expressions_expression
+  flow_expressions_filterexpression)
 
 add_library(flow_graph_tablenode
   table_node.cpp
@@ -40,9 +42,22 @@ target_link_libraries(flow_graph_tablenode
   flow_graph_queryscope
   gccjit)
 
+add_library(flow_graph_printnode
+  print_node.cpp
+  print_node.hpp)
+target_link_libraries(flow_graph_printnode
+  flow_graph_unarynode
+  flow_graph_node)
 
 add_executable(nodes_test
   tests/nodes_test.cpp)
 target_link_libraries(nodes_test
   flow_graph_tablenode
+  flow_graph_filternode
+  flow_graph_printnode
+  flow_expressions_filterexpression
+  flow_expressions_constantexpression
+  flow_expressions_variableexpression
+  flow_expressions_lessthanexpression
+  flow_expressions_additionexpression
   gccjit)

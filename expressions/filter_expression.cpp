@@ -34,7 +34,7 @@ gcc_jit_rvalue* FilterExpression::jit(gcc_jit_context *context,
   gcc_jit_block *block = gcc_jit_function_new_block(func, nullptr);
   gcc_jit_rvalue *body_rval = m_body->jit(context, scope);
   gcc_jit_block_end_with_return(block, nullptr, body_rval);
-  return nullptr;
+  return (gcc_jit_rvalue *) func;
 }
 
 }

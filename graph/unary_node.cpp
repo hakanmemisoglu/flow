@@ -11,6 +11,10 @@ UnaryNode::UnaryNode(const std::string &name,
                      NodePtr child)
   : Node(name),
     m_child(child) {
+  m_child->setParent(this);
+}
+
+UnaryNode::~UnaryNode() {
 }
 
 std::vector<NodePtr> UnaryNode::getChildren() const {

@@ -34,8 +34,12 @@ public:
 
   virtual void codegen(gcc_jit_context *context, QueryScope *scope) = 0;
 
+  Node* getParent();
+  void setParent(Node* node);
+
 private:
   const std::string m_name;
+  Node *m_parent;
 };
 
 }
