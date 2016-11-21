@@ -44,7 +44,11 @@ int main(int argc, char *argv[]) {
   gcc_jit_context_add_command_line_option(context, "-march=haswell");
   gcc_jit_context_add_command_line_option(context, "-fverbose-asm");
   gcc_jit_context_add_command_line_option(context, "-ffast-math");
-  gcc_jit_context_add_command_line_option(context, "-funroll-loops");
+  //gcc_jit_context_add_command_line_option(context, "-faggressive-loop-optimizations");
+  //gcc_jit_context_add_command_line_option(context, "-flto");
+  //gcc_jit_context_add_command_line_option(context, "-fuse-linker-plugin");
+  //gcc_jit_context_add_command_line_option(context, "-gc");
+  //gcc_jit_context_add_command_line_option(context, "-funroll-loops");
 
   flow::QueryScope query_scope;
   gcc_jit_type *void_type = gcc_jit_context_get_type(context, GCC_JIT_TYPE_VOID);
@@ -57,7 +61,7 @@ int main(int argc, char *argv[]) {
                                                                   nullptr,
                                                                   0);
   query_scope.setQueryFunction(query_function);
-  table_node->setNumTuples(100);
+  table_node->setNumTuples(10000);
   table_node->codegen(context, &query_scope);
   gcc_jit_function_dump_to_dot(query_scope.getQueryFunction(), "query.dot");
 

@@ -25,7 +25,7 @@ gcc_jit_rvalue* FilterExpression::jit(gcc_jit_context *context,
   std::size_t num_parameters = 1;
   gcc_jit_function *func = gcc_jit_context_new_function(context,
                                                         location,
-                                                        GCC_JIT_FUNCTION_EXPORTED,
+                                                        GCC_JIT_FUNCTION_ALWAYS_INLINE,
                                                         result_type,
                                                         m_name.c_str(),
                                                         num_parameters,
