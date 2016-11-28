@@ -37,4 +37,12 @@ gcc_jit_rvalue* FilterExpression::jit(gcc_jit_context *context,
   return (gcc_jit_rvalue *) func;
 }
 
+Result FilterExpression::eval(std::int64_t opt_arg) {
+  Result result;
+  result.type = ResultType::BOOLEAN;
+  Result body_result = m_body->eval(opt_arg);
+  result.value = body_result.value;
+  return result;
+}
+
 }

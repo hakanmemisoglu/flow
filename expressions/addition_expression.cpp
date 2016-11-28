@@ -31,4 +31,14 @@ gcc_jit_rvalue* AdditionExpression::jit(gcc_jit_context *context,
   return result;
 }
 
+Result AdditionExpression::eval(std::int64_t opt_arg) {
+  Result left_result = m_left_child->eval(opt_arg);
+  Result right_result = m_right_child->eval(opt_arg);
+
+  Result result;
+  result.type = ResultType::INT64;
+  result.value.int64_value = left_result.value.int64_value + right_result.value.int64_value;
+  return result;
+}
+
 }

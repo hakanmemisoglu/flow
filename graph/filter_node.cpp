@@ -51,4 +51,26 @@ void FilterNode::codegen(gcc_jit_context *context, flow::QueryScope *scope) {
   getParent()->codegen(context, scope);
 }
 
+void FilterNode::open() {
+  m_has_next = false;
+  getChild()->open();
+}
+
+int64_t* FilterNode::next() {
+  return m_next_to_push;
+}
+
+bool FilterNode::hasNext() {
+  m_has_next = false;
+  while (getChild()->hasNext()) {
+    int64_t *value = getChild()->next();
+    if (m_filter_expression->eval(*value).value.bool_value) {
+      m_has_next = true;
+      m_next_to_push = value;
+      break;
+    }
+  }
+  return m_has_next;
+}
+
 }

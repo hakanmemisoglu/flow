@@ -1,5 +1,6 @@
 #include "graph/table_node.hpp"
 
+#include <cstdlib>
 #include <string>
 
 #include <libgccjit.h>
@@ -18,17 +19,28 @@ namespace flow {
 TableNode::TableNode(const std::string &name,
                      const std::string &table_name)
   : NullaryNode(name),
-    m_table_name(table_name) {
+    m_table_name(table_name),
+    m_capacity(128),
+    m_data(reinterpret_cast<std::int64_t*>(std::malloc(128 * sizeof(std::int64_t)))) {
 }
 
 std::int64_t TableNode::getNumTuples() const {
   return m_num_tuples;
 }
 
-void TableNode::setNumTuples(const std::int64_t num_tuples) {
-  m_num_tuples = num_tuples;
+TableNode::~TableNode() {
+  std::free(m_data);
 }
 
+void TableNode::insert(const std::int64_t value) {
+  if (m_num_tuples >= m_capacity) {
+    m_data = reinterpret_cast<std::int64_t *>(
+        std::realloc(m_data, (m_capacity * 2) * sizeof(std::int64_t)));
+    m_capacity = 2 * m_capacity;
+  }
+  m_data[m_num_tuples] = value;
+  ++m_num_tuples;
+}
 
 void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
   gcc_jit_function *query_function = scope->getQueryFunction();
@@ -71,8 +83,12 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
                                                                     int64_type,
                                                                     getNumTuples()));
 
-  gcc_jit_block_end_with_jump(table_node_initial, nullptr, table_node_loop_cond);
-
+  gcc_jit_type *int64_pointer_type = gcc_jit_type_get_pointer(int64_type);
+  gcc_jit_rvalue *column_begin = gcc_jit_context_new_rvalue_from_ptr(context, int64_pointer_type, m_data);
+  gcc_jit_lvalue *value = gcc_jit_context_new_array_access(context,
+                                                           nullptr,
+                                                           column_begin,
+                                                           gcc_jit_lvalue_as_rvalue(tuple_id));
 
   // Loop condition actions.
   gcc_jit_rvalue *loop_guard = gcc_jit_context_new_comparison(
@@ -89,12 +105,6 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
                                      table_node_loop_body);
 
   // Loop body actions.
-  gcc_jit_type *void_type = gcc_jit_context_get_type(context, GCC_JIT_TYPE_VOID);
-  gcc_jit_param *param_first = gcc_jit_context_new_param(context,
-                                                         nullptr,
-                                                         int64_type,
-                                                         "input_value");
-
   gcc_jit_block *table_node_parent_begin =
       gcc_jit_function_new_block(query_function, "Parent1Begin");
 
@@ -119,17 +129,35 @@ void TableNode::codegen(gcc_jit_context *context, QueryScope *scope) {
                               table_node_loop_cond);
 
 
-  // Loop end actions.
-  gcc_jit_block_end_with_void_return(table_node_loop_exit, nullptr);
 
   // Modify the scope.
-  scope->setCurrentValue(gcc_jit_lvalue_as_rvalue(tuple_id));
+  scope->setCurrentValue(gcc_jit_lvalue_as_rvalue(value));
   scope->setCurrentEvalBlock(table_node_parent_begin);
   scope->setCurrentExitBlock(table_node_parent_end);
+  scope->setQueryInitBlock(table_node_initial);
+  scope->setQueryExitBlock(table_node_loop_exit);
 
   // Call parent.
   getParent()->codegen(context, scope);
 
+
+  gcc_jit_block_end_with_jump(table_node_initial, nullptr, table_node_loop_cond);
+
+  // Loop end actions.
+  gcc_jit_block_end_with_void_return(table_node_loop_exit, nullptr);
+
+}
+
+void TableNode::open() {
+  m_iterator_index = 0;
+}
+
+int64_t* TableNode::next() {
+  return &m_data[m_iterator_index++];
+}
+
+bool TableNode::hasNext() {
+  return m_iterator_index < m_num_tuples;
 }
 
 }

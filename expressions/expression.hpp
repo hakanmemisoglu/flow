@@ -7,6 +7,7 @@
 
 #include "expressions/operator.hpp"
 #include "expressions/scope.hpp"
+#include "expressions/result.hpp"
 
 namespace flow {
 
@@ -23,6 +24,8 @@ public:
   virtual gcc_jit_rvalue* jit(gcc_jit_context *context, Scope &scope) = 0;
 
   Operator getOperator() const;
+
+  virtual Result eval(std::int64_t opt_arg = 0) = 0;
 
 protected:
   Expression(Operator op);

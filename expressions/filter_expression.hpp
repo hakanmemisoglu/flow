@@ -24,6 +24,8 @@ public:
 
   gcc_jit_rvalue* jit(gcc_jit_context *context, Scope &scope) override;
 
+  Result eval(std::int64_t opt_arg = 0) final override;
+
 private:
   const std::string m_name;
   ParameterExpressionPtr m_var;

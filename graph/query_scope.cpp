@@ -36,5 +36,20 @@ gcc_jit_rvalue* QueryScope::getCurrentValue() {
   return m_current_value;
 }
 
+void QueryScope::setQueryInitBlock(gcc_jit_block *init_block) {
+  m_query_init_block = init_block;
+}
+
+gcc_jit_block* QueryScope::getQueryInitBlock() {
+  return m_query_init_block;
+}
+
+void QueryScope::setQueryExitBlock(gcc_jit_block *exit_block) {
+  m_query_exit_block = exit_block;
+}
+
+gcc_jit_block* QueryScope::getQueryExitBlock() {
+  return m_query_exit_block;
+}
 
 }

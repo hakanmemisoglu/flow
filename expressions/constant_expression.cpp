@@ -21,4 +21,11 @@ gcc_jit_rvalue* ConstantExpression::jit(gcc_jit_context *context,
   return rval;
 }
 
+Result ConstantExpression::eval(std::int64_t opt_arg) {
+  Result res;
+  res.type = ResultType::INT64;
+  res.value.int64_value = m_value.getVal();
+  return res;
+}
+
 }

@@ -28,6 +28,9 @@ void PrintNode::codegen(gcc_jit_context *context, flow::QueryScope *scope) {
   printf_args[0] = gcc_jit_context_new_string_literal(context, "%d\n");
   printf_args[1] = scope->getCurrentValue();
 
+  gcc_jit_block *current_eval_block = scope->getCurrentEvalBlock();
+  gcc_jit_block *current_exit_block = scope->getCurrentExitBlock();
+
   gcc_jit_block_add_eval(scope->getCurrentEvalBlock(),
                          nullptr,
                          gcc_jit_context_new_call(context,
@@ -36,9 +39,26 @@ void PrintNode::codegen(gcc_jit_context *context, flow::QueryScope *scope) {
                                                   2,
                                                   printf_args));
 
-  gcc_jit_block_end_with_jump(scope->getCurrentEvalBlock(),
-                              nullptr,
-                              scope->getCurrentExitBlock());
+  if (current_eval_block != current_exit_block) {
+    // Means it is pipelining. Put print operation.
+    gcc_jit_block_end_with_jump(current_eval_block,
+                                nullptr,
+                                current_exit_block);
+  }
+}
+
+void PrintNode::open() {
+  getChild()->open();
+}
+
+int64_t* PrintNode::next() {
+  int64_t* value = getChild()->next();
+  printf("%ld\n", *value);
+  return nullptr;
+}
+
+bool PrintNode::hasNext() {
+  return getChild()->hasNext();
 }
 
 }

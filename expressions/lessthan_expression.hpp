@@ -12,6 +12,8 @@ public:
   LessThanExpression(ExpressionPtr left, ExpressionPtr right);
 
   gcc_jit_rvalue* jit(gcc_jit_context *context, Scope &scope) override;
+
+  Result eval(std::int64_t opt_arg = 0) final override;
 };
 
 }

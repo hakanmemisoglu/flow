@@ -28,4 +28,13 @@ gcc_jit_rvalue* SubtractionExpression::jit(gcc_jit_context *context,
   return result;
 }
 
+Result SubtractionExpression::eval(std::int64_t opt_arg) {
+  Result left_result = m_left_child->eval(opt_arg);
+  Result right_result = m_right_child->eval(opt_arg);
+  Result r;
+  r.type = ResultType::INT64;
+  r.value.int64_value = left_result.value.int64_value - right_result.value.int64_value;
+  return r;
+}
+
 }

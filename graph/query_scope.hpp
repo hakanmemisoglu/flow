@@ -26,6 +26,11 @@ public:
   void setCurrentValue(gcc_jit_rvalue *value);
   gcc_jit_rvalue* getCurrentValue();
 
+  void setQueryInitBlock(gcc_jit_block *init_block);
+  gcc_jit_block* getQueryInitBlock();
+
+  void setQueryExitBlock(gcc_jit_block *exit_block);
+  gcc_jit_block* getQueryExitBlock();
 
 private:
   gcc_jit_function *m_query_function;
@@ -35,6 +40,10 @@ private:
   gcc_jit_rvalue *m_current_value;
 
   gcc_jit_block *m_eval_block;
+
+  gcc_jit_block *m_query_init_block;
+
+  gcc_jit_block *m_query_exit_block;
 };
 
 }

@@ -18,6 +18,10 @@ public:
             NodePtr input);
 
   void codegen(gcc_jit_context *context, QueryScope *scope) final override;
+
+  void open() final override;
+  int64_t* next() final override;
+  bool hasNext() final override;
 };
 
 }

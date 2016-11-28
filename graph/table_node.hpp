@@ -23,15 +23,26 @@ public:
   TableNode(const std::string &name,
             const std::string &table_name);
 
+  ~TableNode();
+
   void codegen(gcc_jit_context *context, QueryScope *query_scope) final override;
 
   std::int64_t getNumTuples() const;
 
-  void setNumTuples(const std::int64_t num_tuples);
+  void insert(const std::int64_t value);
+
+  void open() final override;
+  int64_t* next() final override;
+  bool hasNext() final override;
 
 protected:
   const std::string m_table_name;
   std::int64_t m_num_tuples;
+
+  std::int64_t m_capacity;
+  std::int64_t *m_data;
+
+  std::int64_t m_iterator_index;
 };
 
 }

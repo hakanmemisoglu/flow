@@ -6,6 +6,10 @@ add_library(flow_graph_node
   node.cpp
   node.hpp)
 
+add_library(flow_graph_aggregatenode
+  aggregate_node.cpp
+  aggregate_node.hpp)
+
 add_library(flow_graph_nullarynode
   nullary_node.cpp
   nullary_node.hpp)
@@ -52,6 +56,7 @@ target_link_libraries(flow_graph_printnode
 add_executable(nodes_test
   tests/nodes_test.cpp)
 target_link_libraries(nodes_test
+  flow_graph_aggregatenode
   flow_graph_tablenode
   flow_graph_filternode
   flow_graph_printnode
@@ -61,3 +66,16 @@ target_link_libraries(nodes_test
   flow_expressions_lessthanexpression
   flow_expressions_additionexpression
   gccjit)
+
+add_executable(interpreter_test
+  tests/interpreter_test.cpp)
+target_link_libraries(interpreter_test
+  flow_graph_aggregatenode
+  flow_graph_tablenode
+  flow_graph_filternode
+  flow_graph_printnode
+  flow_expressions_filterexpression
+  flow_expressions_constantexpression
+  flow_expressions_variableexpression
+  flow_expressions_lessthanexpression
+  flow_expressions_additionexpression)

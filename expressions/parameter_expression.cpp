@@ -30,4 +30,9 @@ gcc_jit_rvalue* ParameterExpression::jit(gcc_jit_context *context,
   return (gcc_jit_rvalue*) param;
 }
 
+Result ParameterExpression::eval(std::int64_t opt_arg) {
+  Result r;
+  return r;
+}
+
 }

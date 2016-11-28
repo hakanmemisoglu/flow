@@ -37,6 +37,10 @@ public:
   Node* getParent();
   void setParent(Node* node);
 
+  virtual void open() = 0;
+  virtual int64_t* next() = 0;
+  virtual bool hasNext() = 0;
+
 private:
   const std::string m_name;
   Node *m_parent;

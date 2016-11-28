@@ -30,7 +30,7 @@ int main() {
   flow::ExpressionPtr f1 = std::make_shared<flow::FilterExpression>("filter",
                                                                     param,
                                                                     e7);
-
+  /*
   flow::Scope scope;
   gcc_jit_context *context = gcc_jit_context_acquire();
   gcc_jit_context_set_int_option(context, GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL, 3);
@@ -49,5 +49,11 @@ int main() {
 
   gcc_jit_context_release(context);
   gcc_jit_result_release(res);
+  */
+
+  std::cout << "INTERPRETER" << std::endl;
+  std::cout << f1->eval(100).value.bool_value << std::endl;
+  std::cout << f1->eval(200).value.bool_value << std::endl;
+  std::cout << f1->eval(600).value.bool_value << std::endl;
 
 }

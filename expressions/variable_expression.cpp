@@ -18,4 +18,11 @@ gcc_jit_rvalue* VariableExpression::jit(gcc_jit_context *context,
   return rval;
 }
 
+Result VariableExpression::eval(std::int64_t opt_arg) {
+  Result r;
+  r.type = ResultType::INT64;
+  r.value.int64_value = opt_arg;
+  return r;
+}
+
 }

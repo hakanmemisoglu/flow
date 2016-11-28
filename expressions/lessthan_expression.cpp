@@ -27,4 +27,13 @@ gcc_jit_rvalue* LessThanExpression::jit(gcc_jit_context *context,
   return result;
 }
 
+Result LessThanExpression::eval(std::int64_t opt_arg) {
+  Result value_left = m_left_child->eval(opt_arg);
+  Result value_right = m_right_child->eval(opt_arg);
+  Result result;
+  result.type = ResultType::BOOLEAN;
+  result.value.bool_value = value_left.value.int64_value < value_right.value.int64_value;
+  return result;
+}
+
 };
