@@ -21,9 +21,9 @@ int main() {
   flow::ExpressionPtr const_e1 = std::make_shared<flow::ConstantExpression>(10);
   flow::VariableExpressionPtr var_e1 = std::make_shared<flow::VariableExpression>("x");
   flow::ExpressionPtr addition_e1 = std::make_shared<flow::AdditionExpression>(var_e1, const_e1);
-  flow::ExpressionPtr const_e2 = std::make_shared<flow::ConstantExpression>(55);
+  flow::ExpressionPtr const_e2 = std::make_shared<flow::ConstantExpression>(30);
 
-  flow::ExpressionPtr cond_e1 = std::make_shared<flow::LessThanExpression>(const_e2, addition_e1);
+  flow::ExpressionPtr cond_e1 = std::make_shared<flow::LessThanExpression>(addition_e1, const_e2);
 
   flow::ParameterExpressionPtr param = std::make_shared<flow::ParameterExpression>("x");
   flow::FilterExpressionPtr filter_e = std::make_shared<flow::FilterExpression>("filter",
@@ -34,10 +34,10 @@ int main() {
                                                                        table_node,
                                                                        filter_e);
 
-  flow::AggregateNodePtr agg_node = std::make_shared<flow::AggregateNode>("AggNode1", filter_node, flow::AggregateType::SUM);
+  //flow::AggregateNodePtr agg_node = std::make_shared<flow::AggregateNode>("AggNode1", table_node, flow::AggregateType::SUM);
 
   flow::PrintNodePtr print_node = std::make_shared<flow::PrintNode>("PrintNode1",
-                                                                    agg_node);
+                                                                    filter_node);
 
   /*
   for (std::int64_t i = 0; i < 60; ++i) {

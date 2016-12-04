@@ -27,10 +27,10 @@ int main(int argc, char *argv[]) {
       std::make_shared<flow::VariableExpression>("x");
   flow::ExpressionPtr addition_e1 =
       std::make_shared<flow::AdditionExpression>(var_e1, const_e1);
-  flow::ExpressionPtr const_e2 = std::make_shared<flow::ConstantExpression>(55);
+  flow::ExpressionPtr const_e2 = std::make_shared<flow::ConstantExpression>(11);
 
   flow::ExpressionPtr cond_e1 =
-      std::make_shared<flow::LessThanExpression>(const_e2, addition_e1);
+    std::make_shared<flow::LessThanExpression>(addition_e1, const_e2);
 
   flow::ParameterExpressionPtr param =
       std::make_shared<flow::ParameterExpression>("x");
@@ -40,21 +40,21 @@ int main(int argc, char *argv[]) {
   flow::FilterNodePtr filter_node =
       std::make_shared<flow::FilterNode>("FilterNode1", table_node, filter_e);
 
-  flow::AggregateNodePtr agg_node = std::make_shared<flow::AggregateNode>(
-      "AggNode1", filter_node, flow::AggregateType::SUM);
+  //flow::AggregateNodePtr agg_node = std::make_shared<flow::AggregateNode>(
+  //    "AggNode1", table_node, flow::AggregateType::SUM);
 
   flow::PrintNodePtr print_node =
-      std::make_shared<flow::PrintNode>("PrintNode1", agg_node);
+      std::make_shared<flow::PrintNode>("PrintNode1", filter_node);
 
   gcc_jit_context *context = gcc_jit_context_acquire();
-  gcc_jit_context_set_int_option(context, GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL, 2);
+  gcc_jit_context_set_int_option(context, GCC_JIT_INT_OPTION_OPTIMIZATION_LEVEL, 3);
   //gcc_jit_context_set_bool_option(context, GCC_JIT_BOOL_OPTION_DUMP_GENERATED_CODE, 1);
   //gcc_jit_context_set_bool_option(context, GCC_JIT_BOOL_OPTION_DUMP_INITIAL_GIMPLE, 1);
 
-  //gcc_jit_context_add_command_line_option(context, "-march=haswell");
+  gcc_jit_context_add_command_line_option(context, "-march=haswell");
   //gcc_jit_context_add_command_line_option(context, "-fverbose-asm");
-  //gcc_jit_context_add_command_line_option(context, "-ffast-math");
-  //gcc_jit_context_add_command_line_option(context, "-faggressive-loop-optimizations");
+  gcc_jit_context_add_command_line_option(context, "-ffast-math");
+  gcc_jit_context_add_command_line_option(context, "-faggressive-loop-optimizations");
   //gcc_jit_context_add_command_line_option(context, "-funroll-loops");
   //gcc_jit_context_add_command_line_option(context, "-flto");
 
